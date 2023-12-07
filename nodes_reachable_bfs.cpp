@@ -19,26 +19,14 @@ using namespace std;
 
 #define ll long long    
 
-// sample input
-// Enter number of vertices: 8
-// Enter number of edges: 8
-// 0 1
-// 1 2
-// 2 3
-// 0 3
-// 0 4
-// 5 6
-// 6 7
-// 8 8
 
 
 class graph
 {
     int v;
-    map<int, list<int> > l;
 
+    unordered_map<int, list<int> > l;
 public:
-
     graph(int V)
     {
         v = V;
@@ -48,46 +36,41 @@ public:
     {
         l[x].push_back(y);
         l[y].push_back(x);
-
     }
 
-    void dfs_helper(int source, unordered_map<int, int> & visited)
-    {
-        cout << source << " ";
-        visited[source] = 1;
-
-        for (auto nbr: l[source])
-        {
-            if (visited[nbr] == 0)
-            {
-                dfs_helper(nbr, visited);
-            }
-        }
-    }
-
-    void dfs()
+    void bfs(int source)
     {
         unordered_map<int, int> visited;
-        int count = 0;
-
-        for (auto p: l)
+        queue <int> q;
+        q.push(source);
+        visited[source] = 1;
+        
+        while(!q.empty())
         {
-            if (visited[p.first] == 0)
-            {
-                count ++;
-                cout << "Component " << count << " -->";
-                dfs_helper(p.first, visited);
-                cout << endl;
-            }
-        }
-    }
 
+            int front = q.front();
+            cout << front << " ";
+            // go to its neighbours
+            for (auto x: l[front])
+            {
+                if (visited[x] == 0)
+                {
+                    q.push(x);
+                    visited[x] = 1;
+                }
+            }
+
+            q.pop();
+        }
+        cout << endl;
+    }
+    
+    
 };
 
 int main()
 {
     
-
     cout << "Enter number of vertices: ";
     int v;
     cin >> v;
@@ -105,7 +88,11 @@ int main()
         g.insert_edge(x, y);
     }
 
+    int source;
+    cout << "Enter source: ";
+    cin >> source;
 
-    g.dfs();
-    
+    cout << "Nodes reachable from " << source << " are: ";
+    g.bfs(source);
+
 }
